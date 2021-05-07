@@ -29,11 +29,6 @@ function onConnect(socket) {
 	});
 }
 
-app.use(express.static(path.join(__dirname, 'build')));
-// app.get('/index.html', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'build', '/index.html'));
-// });
-
 
 io.on('connect', onConnect);
 http.listen(port, () => console.log(`Socket server is listening on port: ${ port }`));

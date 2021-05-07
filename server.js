@@ -23,16 +23,11 @@ function onConnect(socket) {
 	});
 
 	socket.on('fromClient', (response) => {
-    	queue.push(`${ getTimestamp() }-${ response }`);
+    	queue.push(`${ response }`);
     	if(queue.length > 10) queue.shift();
 		io.emit('fromServer', queue.join('#'));
 	});
 }
-
-app.use(express.static(path.join(__dirname, 'build')));
-// app.get('/index.html', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'build', '/index.html'));
-// });
 
 
 io.on('connect', onConnect);

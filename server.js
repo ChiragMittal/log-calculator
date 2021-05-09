@@ -14,12 +14,6 @@ function onConnect(socket) {
 		socket.emit('fromServer', queue.join('#'));
 		
 	});
-
-	socket.on('clear logs', (response) => {
-		queue.length = 0;
-		io.emit('fromServer', queue.join('#'));
-	});
-
 	
 	socket.on('fromClient', (response) => {
     	queue.push(`${ response }`);
@@ -31,7 +25,8 @@ function onConnect(socket) {
    socket.on('disconnect', function () {
        clients--;
 	   if (clients == 0){
-		   queue.length=0
+		queue.length = 0;
+		io.emit('fromServer', queue.join('#'));
 	   }
    });
 }

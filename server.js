@@ -7,14 +7,12 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 5000;
 const queue = [];
 
-function getTimestamp() {
-	let time = new Date();
-	return `${ time.toTimeString().slice(0, 8) }:${ time.getMilliseconds() }`
-}
-
+var clients= 0
 function onConnect(socket) {
+
 	socket.on('connection', (response) => {
 		socket.emit('fromServer', queue.join('#'));
+		
 	});
 
 	socket.on('clear logs', (response) => {
@@ -22,13 +20,23 @@ function onConnect(socket) {
 		io.emit('fromServer', queue.join('#'));
 	});
 
+	
 	socket.on('fromClient', (response) => {
     	queue.push(`${ response }`);
     	if(queue.length > 10) queue.shift();
 		io.emit('fromServer', queue.join('#'));
 	});
+	
+	++clients;
+   socket.on('disconnect', function () {
+       clients--;
+	   if (clients == 0){
+		   queue.length=0
+	   }
+   });
 }
 
 
 io.on('connect', onConnect);
+
 http.listen(port, () => console.log(`Socket server is listening on port: ${ port }`));
